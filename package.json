@@ -1,0 +1,17 @@
+{
+  "name": "getprojecto-landing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Projecto — coming soon landing + waiting list (getprojecto.ch)",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "nodemailer": "^6.9.16"
+  }
+}
