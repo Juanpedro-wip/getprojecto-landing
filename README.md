@@ -1,55 +1,56 @@
-# Projecto — landing "coming soon" (getprojecto.ch)
+# getprojecto.ch — Landing "coming soon"
 
-Pagina Node.js (Express) con waiting list e SEO completa.
+Landing multilingua (IT / EN / FR / DE) per **getprojecto.ch**, con waiting list.
+Node.js + Express. **Niente build**: CSS, logo e JS sono *inline* (in `assets.js`),
+così il deploy non dipende dalla cartella `public/`.
 
-## Avvio locale
+## Funzioni
+- 4 lingue con URL dedicati (`/it` `/en` `/fr` `/de`) + `hreflang`; la root redirige
+  alla lingua del browser.
+- **Waiting list**: `POST /api/join` → salva il lead in `data/waitlist.json`, e — se l'SMTP
+  è configurato — invia una **notifica** a `info@getprojecto.ch` e una **mail di benvenuto**
+  all'iscritto (logo allegato via CID, testo localizzato).
+- SEO: `sitemap.xml`, `robots.txt`, JSON-LD, OpenGraph.
+
+## Sviluppo locale
 ```bash
 npm install
-npm run dev      # con auto-reload, oppure: npm start
-# → http://localhost:3000
+npm start            # http://localhost:4000
 ```
 
-## Come funziona la waiting list
-- Il bottone invia l'email a `POST /api/join`.
-- L'indirizzo viene **salvato in `data/waitlist.json`** (dedupe) — funziona anche senza email.
-- Se configuri lo **SMTP** in `.env`, arriva anche una **notifica a `info@getprojecto.ch`**.
-
-### Configurare l'email (consigliato)
-Copia `.env.example` in `.env` e compila i campi SMTP. Provider facili:
-- **Resend** / **Postmark** / **Mailgun** (SMTP dedicato, ottima deliverability)
-- **Infomaniak** (svizzero) o l'SMTP del provider del dominio getprojecto.ch
+## Variabili d'ambiente (`.env`)
+Crea un file `.env` nella root (vedi `.env.example`). **Non è versionato** (è in `.gitignore`).
+```ini
+PORT=4000
+SMTP_HOST=mail.infomaniak.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=info@getprojecto.ch
+SMTP_PASS=la_password_della_casella
+SMTP_FROM=Projecto <info@getprojecto.ch>
+WAITLIST_TO=info@getprojecto.ch
 ```
-SMTP_HOST=smtp.tuoprovider.com
-SMTP_PORT=587
-SMTP_USER=...
-SMTP_PASS=...
-SMTP_FROM="Projecto <noreply@getprojecto.ch>"
+Senza SMTP i lead vengono **solo salvati su file** (nessuna email).
+⚠️ Il client SMTP si crea **all'avvio**: dopo aver creato/modificato il `.env`, **riavvia l'app**.
+
+## Deploy (Infomaniak Node.js, via Git)
+Prima installazione — nella cartella del sito, via SSH:
+```bash
+git clone https://github.com/Juanpedro-wip/getprojecto-landing.git .
+npm install
+# crea il .env con le SMTP (una volta)
 ```
+Pannello: **Esecuzione** `npm start` · **Porta** `4000` · **Build** `npm install`.
 
-## Logo
-La pagina usa `public/logo.png` (hero) e `public/favicon.png` + `public/og-image.png`.
-Ho messo come default il **logo bussola** pulito (navy/ambra, trasparente).
-👉 Per usare il **tuo** logo: sovrascrivi `public/logo.png` (consigliato PNG trasparente, ~360×120 o quadrato),
-e se vuoi rigenera `public/og-image.png` (1200×630) con la tua grafica.
+### Aggiornamenti
+```bash
+git pull
+npm install        # solo se sono cambiate le dipendenze
+# poi: Riavvia l'app dal pannello
+```
+`.env`, `node_modules` e i lead **non vengono toccati**.
 
-## SEO già pronta
-- `<title>`, description, keywords, canonical, robots, theme-color
-- **Open Graph** + **Twitter Card** (immagine `og-image.png`)
-- **JSON-LD** schema.org: Organization + WebSite + SoftwareApplication
-- `robots.txt` + `sitemap.xml` + `site.webmanifest` + favicon
-- HTML semantico, mobile-first, leggera e veloce (no font esterni) → buoni Core Web Vitals
-
-### Dopo il deploy (per posizionarsi)
-1. Verifica il dominio su **Google Search Console** e **Bing Webmaster Tools**, invia `sitemap.xml`.
-2. Assicurati che il sito risponda in **HTTPS** (certificato) e su `https://getprojecto.ch` (con redirect da www).
-3. La SEO tecnica è perfetta, ma il **ranking alto richiede contenuti + tempo + backlink**: una coming-soon
-   indicizza subito ma sale di posizione man mano che aggiungi pagine/contenuti reali.
-
-## Deploy
-Serve un host che esegua Node (per l'endpoint `/api/join`):
-- **Render** / **Railway** / **Fly.io** (Node, free tier): build `npm install`, start `npm start`.
-- Poi punta il dominio: record **A/CNAME** di `getprojecto.ch` verso l'host (DNS dal registrar).
-- In alternativa solo-statico (senza Node): pubblica `public/` su Netlify/Vercel e usa un form-service
-  (Netlify Forms / Formspree) al posto di `/api/join`.
-
-I lead sono in `data/waitlist.json` (e/o via email). Fai backup di quel file.
+## Note
+- `assets.js` è **generato** (CSS + logo + JS inline). Se cambiano stile/logo/JS va rigenerato.
+- L'app ascolta su `process.env.PORT` (default `4000`).
+- I lead sono in `data/waitlist.json` (`cat data/waitlist.json`).
