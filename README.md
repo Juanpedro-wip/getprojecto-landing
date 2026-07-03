@@ -29,9 +29,17 @@ SMTP_USER=info@getprojecto.ch
 SMTP_PASS=la_password_della_casella
 SMTP_FROM=Projecto <info@getprojecto.ch>
 WAITLIST_TO=info@getprojecto.ch
+GA_MEASUREMENT_ID=G-XXXXXXXXXX
 ```
 Senza SMTP i lead vengono **solo salvati su file** (nessuna email).
 ⚠️ Il client SMTP si crea **all'avvio**: dopo aver creato/modificato il `.env`, **riavvia l'app**.
+
+### Google Analytics 4
+Con `GA_MEASUREMENT_ID` impostato (l'ID `G-…` della proprietà GA4, da *Amministrazione →
+Stream di dati*), ogni pagina include lo snippet `gtag.js` e l'iscrizione alla waiting list
+invia l'evento **`generate_lead`** (con parametro `language`), utilizzabile come conversione.
+Senza la variabile **non viene iniettato nulla**. Come per l'SMTP: la variabile si legge
+**all'avvio** → dopo averla aggiunta al `.env`, riavvia l'app.
 
 ## Deploy (Infomaniak Node.js, via Git)
 Prima installazione — nella cartella del sito, via SSH:

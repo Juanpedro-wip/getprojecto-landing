@@ -3,6 +3,12 @@ import { CSS, LOGO, JS } from './assets.js' // CSS + logo + JS inline (deploy se
 export const LOCALES = ['en', 'it', 'fr', 'de']
 export const DEFAULT_LOCALE = 'en'
 const BASE = 'https://getprojecto.ch'
+// Google Analytics 4: attivo solo se GA_MEASUREMENT_ID è nel .env (es. G-XXXXXXXXXX).
+const GA_ID = (process.env.GA_MEASUREMENT_ID || '').trim()
+const GA_SNIPPET = GA_ID
+  ? `  <script async src="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','${GA_ID}')</script>`
+  : ''
 const ASSET_V = '4' // cache-busting: bump quando cambiano css/logo/og/favicon
 const OG_LOCALE = { en: 'en', it: 'it_IT', fr: 'fr_FR', de: 'de_DE' }
 const LANG_LABEL = { en: 'EN', it: 'IT', fr: 'FR', de: 'DE' }
@@ -145,6 +151,7 @@ ${LOCALES.filter((l) => l !== lang).map((l) => `  <meta property="og:locale:alte
   }
   </script>
   <script>window.I18N=${i18n}</script>
+${GA_SNIPPET}
 </head>
 <body>
   <div class="bg-grid" aria-hidden="true"></div>
