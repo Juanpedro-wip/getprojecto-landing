@@ -3,8 +3,9 @@ import { CSS, LOGO, JS } from './assets.js' // CSS + logo + JS inline (deploy se
 export const LOCALES = ['en', 'it', 'fr', 'de']
 export const DEFAULT_LOCALE = 'en'
 const BASE = 'https://getprojecto.ch'
-// Google Analytics 4: attivo solo se GA_MEASUREMENT_ID è nel .env (es. G-XXXXXXXXXX).
-const GA_ID = (process.env.GA_MEASUREMENT_ID || '').trim()
+// Google Analytics 4: ID della proprietà getprojecto.ch (pubblico, visibile nel sorgente).
+// Override via GA_MEASUREMENT_ID nel .env; stringa vuota ("GA_MEASUREMENT_ID= ") per disattivare.
+const GA_ID = (process.env.GA_MEASUREMENT_ID ?? 'G-R5QT266WNY').trim()
 const GA_SNIPPET = GA_ID
   ? `  <script async src="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','${GA_ID}')</script>`
